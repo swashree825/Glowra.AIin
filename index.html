@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glowra.AI - Personalized Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #F7FAFC;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #FF6B6B, #FFD93D);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      text-align: center;
+      padding: 20px;
+    }
+    .btn {
+      background: linear-gradient(90deg, #4ECDC4, #36D1DC);
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin: 10px 0;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    .about-ceo, .plan {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      text-align: left;
+    }
+    .about-ceo h2, .plan h2 {
+      color: #FF6B6B;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .plan h3 {
+      color: #4ECDC4;
+      margin-top: 15px;
+    }
+    .plan ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .plan ul li {
+      margin-bottom: 8px;
+      padding: 8px;
+      background: #F7FAFC;
+      border-radius: 6px;
+    }
+    .plan img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    footer {
+      background: linear-gradient(90deg, #FF6B6B, #FFD93D);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Glowra.AI - Your Wellness Partner</header>
+
+  <div class="container" id="main-container">
+    <h1>Welcome to Glowra.AI</h1>
+    <p>Your personalized health, fitness, and nutrition journey starts here.</p>
+    <button class="btn" onclick="startCheck()">Start Wellness Check</button>
+
+    <div class="about-ceo" id="ceo">
+      <h2>About the CEO</h2>
+      <p>
+        <strong>Swashree Samikshya</strong> is a 17-year-old designer, entrepreneur, and the visionary behind Glowra.AI.  
+        Passionate about health, fitness, and AI technology, she combines creativity and innovation to make personalized wellness accessible to everyone.  
+      </p>
+      <p>
+        Her mission is to help people take control of their health with AI-powered, personalized guidance.
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 | CEO & Co-Founder: <strong>Swashree Samikshya</strong>
+  </footer>
+
+  <script>
+    const questions = [
+      {
+        q: "How many hours do you sleep daily?",
+        options: ["Less than 5 hours", "5-7 hours", "7-9 hours", "More than 9 hours"]
+      },
+      {
+        q: "How healthy is your diet?",
+        options: ["Very unhealthy", "Somewhat unhealthy", "Balanced", "Very healthy"]
+      },
+      {
+        q: "What is your age?",
+        type: "input"
+      },
+      {
+        q: "Do you have any health conditions?",
+        options: ["None", "Diabetes / Hypertension", "Respiratory issues", "Thyroid"]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+
+    function startCheck() {
+      currentQuestion = 0;
+      answers = [];
+      document.getElementById('ceo').style.display = 'none';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if(currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        let html = `<h3>${q.q}</h3>`;
+        html += '<div>';
+        if(q.type === "input") {
+          html += `<input type="number" id="age-input" placeholder="Enter your age" style="padding:10px; font-size:16px; border-radius:6px; border:1px solid #ccc; width:80%; margin-bottom:20px;"><br>`;
+          html += `<button class="btn" onclick="selectOption(document.getElementById('age-input').value)">Next</button>`;
+        } else {
+          q.options.forEach(opt => {
+            html += `<button class="btn" onclick="selectOption('${opt}')">${opt}</button><br>`;
+          });
+        }
+        html += '</div>';
+        document.getElementById('main-container').innerHTML = html;
+      } else {
+        showPlan();
+      }
+    }
+
+    function selectOption(option) {
+      if(option === "") { alert("Please enter a value."); return; }
+      answers.push(option);
+      currentQuestion++;
+      showQuestion();
+    }
+
+    function showPlan() {
+      const age = answers[2];
+      const condition = answers[3];
+      let planHTML = `<h2>Your Personalized Wellness Plan</h2>`;
+      planHTML += `<p><strong>Sleep:</strong> ${answers[0]}</p>`;
+      planHTML += `<p><strong>Diet Quality:</strong> ${answers[1]}</p>`;
+      planHTML += `<p><strong>Age:</strong> ${age}</p>`;
+      planHTML += `<p><strong>Health Condition:</strong> ${condition}</p>`;
+
+      // Dynamic plans based on condition
+      if(condition === "None") {
+        planHTML += generalPlan();
+      } else if(condition === "Diabetes / Hypertension") {
+        planHTML += diabetesPlan();
+      } else if(condition === "Respiratory issues") {
+        planHTML += respiratoryPlan();
+      } else if(condition === "Thyroid") {
+        planHTML += thyroidPlan();
+      } else {
+        planHTML += generalPlan();
+      }
+
+      document.getElementById('main-container').innerHTML = planHTML;
+    }
+
+    // Plan functions
+    function generalPlan() {
+      return `
+        <div class="plan">
+          <h2>General Health Plan</h2>
+          <h3>🍎 Diet</h3>
+          <img src="https://source.unsplash.com/300x200/?healthy-food" alt="Healthy Food">
+          <ul>
+            <li>Breakfast: Vegetable oats or scrambled eggs with multigrain toast</li>
+            <li>Lunch: Brown rice or roti, dal, mixed vegetable curry, and salad</li>
+            <li>Dinner: Grilled chicken/fish or tofu with vegetables</li>
+            <li>Snacks: Seasonal fruits, green tea</li>
+          </ul>
+          <h3>💪 Workouts & Yoga</h3>
+          <img src="https://source.unsplash.com/300x200/?yoga" alt="Yoga Pose">
+          <ul>
+            <li>20 mins brisk walk</li>
+            <li>10 mins yoga (cobra, bridge, child’s pose)</li>
+            <li>10 mins sun exposure</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function diabetesPlan() {
+      return `
+        <div class="plan">
+          <h2>Diabetes / Hypertension Plan</h2>
+          <h3>🍎 Diet</h3>
+          <img src="https://source.unsplash.com/300x200/?diabetes,healthy" alt="Diabetes Diet">
+          <ul>
+            <li>Breakfast: Moong dal cheela or vegetable upma</li>
+            <li>Lunch: 2 multigrain rotis, dal, non-starchy vegetables, curd</li>
+            <li>Dinner: Grilled fish or chicken with sautéed vegetables</li>
+            <li>Snacks: Sprouts salad, handful of nuts</li>
+          </ul>
+          <h3>💪 Workouts & Yoga</h3>
+          <img src="https://source.unsplash.com/300x200/?exercise" alt="Workout">
+          <ul>
+            <li>30 mins brisk walk</li>
+            <li>Yoga 10–15 mins (sun salutations, cat-cow, seated forward bend)</li>
+            <li>Breathing: Anulom Vilom, Bhramari, Deep Belly Breathing</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function respiratoryPlan() {
+      return `
+        <div class="plan">
+          <h2>Respiratory Health Plan</h2>
+          <h3>🍎 Diet</h3>
+          <img src="https://source.unsplash.com/300x200/?vegetables,healthy" alt="Respiratory Diet">
+          <ul>
+            <li>Breakfast: Poha with vegetables or boiled eggs with spinach</li>
+            <li>Lunch: Brown rice, dal, steamed broccoli, protein (chicken/tofu)</li>
+            <li>Dinner: Soup with mixed vegetables and grilled protein</li>
+            <li>Snacks: Carrot and beetroot juice, citrus fruits</li>
+          </ul>
+          <h3>💪 Workouts & Yoga</h3>
+          <img src="https://source.unsplash.com/300x200/?breathing" alt="Breathing Exercises">
+          <ul>
+            <li>20 mins light cycling or walking</li>
+            <li>Breathing exercises: Diaphragmatic, Pursed-lip, Box breathing</li>
+            <li>Extra Exercises: Kapalabhati Pranayama, Shoulder-Opening, Thoracic Stretch, Supported Bridge Pose, Light Dumbbell Pullover</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function thyroidPlan() {
+      return `
+        <div class="plan">
+          <h2>Thyroid Health Plan</h2>
+          <h3>🍎 Diet</h3>
+          <img src="https://source.unsplash.com/300x200/?thyroid,healthy-food" alt="Thyroid Diet">
+          <ul>
+            <li>Breakfast: Oats porridge with cinnamon and chia seeds or vegetable omelette</li>
+            <li>Lunch: 2–3 multigrain rotis, dal, steamed vegetables, small dairy/iodine foods</li>
+            <li>Dinner: Grilled chicken/fish/tofu, light vegetable soup, steamed greens</li>
+            <li>Snacks: Green smoothie, roasted pumpkin seeds or walnuts</li>
+          </ul>
+          <h3>💪 Workouts & Yoga</h3>
+          <img src="https://source.unsplash.com/300x200/?yoga" alt="Yoga">
+          <ul>
+            <li>20–25 mins daily yoga routine (Sun Salutation, Shoulder Stand, Plow, Bridge, Fish, Cat-Cow, Cobra, Seated Forward Bend, Anulom Vilom)</li>
+            <li>Workout: 20–25 mins brisk walk, 10 mins bodyweight exercises, 5–10 mins stretching</li>
+          </ul>
+        </div>
+      `;
+    }
+
+  </script>
+
+</body>
+</html>
